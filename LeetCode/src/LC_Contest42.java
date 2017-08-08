@@ -1,15 +1,19 @@
-
 public class LC_Contest42 {
 
     public static void main(String[] args) {
 
         int nums[] = {2,3,2};
 
-        int ar[] = findErrorNums(nums);
-        System.out.println(ar[0] + " " + ar[1]);
+        //int ar[] = findErrorNums(nums);
+        //System.out.println(ar[0] + " " + ar[1]);
 
         String s = "aaa";
-        System.out.println(countSubstrings(s));
+        //System.out.println(countSubstrings(s));
+
+        int[][] ar = {{3,4}, {2,3}, {1,2}};
+        //int[][] ar = {{-1,1},{-2,7},{-5,8},{-3,8},{1,3},{-2,9},{-5,2}};
+        int t = findLongestChain(ar);
+        System.out.println(t);
     }
 
 
@@ -56,26 +60,87 @@ public class LC_Contest42 {
     }
 
 
+    /*
 
+            You are given n pairs of numbers. In every pair, the first number is always smaller than the second number.
+
+            Now, we define a pair (c, d) can follow another pair (a, b) if and only if b < c. Chain of pairs can be formed in this fashion.
+
+            Given a set of pairs, find the length longest chain which can be formed. You needn't use up all the given pairs. You can select pairs in any order.
+
+            Example 1:
+            Input: [[1,2], [2,3], [3,4]]
+            Output: 2
+            Explanation: The longest chain is [1,2] -> [3,4]
+            Note:
+            The number of given pairs will be in the range [1, 1000].
+
+    */
     public static int findLongestChain(int[][] pairs) {
 
+        //Arrays.sort(pairs, (a, b) -> a[1] - b[1]); //Could have been used rather mergeSortFor2d
+        if(pairs.length==0)
+            return 0;
+        mergeSortFor2d(pairs, 0, pairs.length-1);
+        int longestLen = 0;//First one must be in the list
+        int prevStop=Integer.MIN_VALUE;
+        for(int i=0; i<pairs.length; i++)
+        {
+            if(prevStop<pairs[i][0]) {
+                prevStop=pairs[i][1];
+                longestLen++;
+            }
+        }
 
-        return 0;
+        return longestLen;
     }
 
-    public static void mergerSortFor2d(int[][] pairs, int start, int end)
+    public static void mergeSortFor2d(int[][] pairs, int start, int end)
     {
-        //basecase
+        //base case
         if(start>=end)
             return;
 
         //split
         int mid = (start+end)/2;
-        mergerSortFor2d(pairs, start, mid);
-        mergerSortFor2d(pairs, mid+1, end);
+        mergeSortFor2d(pairs, start, mid);
+        mergeSortFor2d(pairs, mid+1, end);
 
         //merge
+        mergeData(pairs, start, mid, end);
+    }
 
+    private static void mergeData(int[][] pairs, int start, int mid, int end) {
+        int[][] temp = new int[end-start+1][2];
+        for(int i=0, left=start, right=mid+1; i<temp.length && (left<=mid || right<=end); i++)
+        {
+            if(left==mid+1) {
+                temp[i][0] = pairs[right][0];
+                temp[i][1] = pairs[right][1];
+                right++;
+            }else if(right==end+1)
+            {
+                temp[i][0] = pairs[left][0];
+                temp[i][1] = pairs[left][1];
+                left++;
+            }else{
+                if(pairs[left][1]>pairs[right][1])
+                {
+                    temp[i][0] = pairs[right][0];
+                    temp[i][1] = pairs[right][1];
+                    right++;
+                }else{
+                    temp[i][0] = pairs[left][0];
+                    temp[i][1] = pairs[left][1];
+                    left++;
+                }
+            }
+        }
+
+        for(int i=0; i<temp.length; i++, start++) {
+            pairs[start][0] = temp[i][0];
+            pairs[start][1] = temp[i][1];
+        }
     }
 
 
@@ -130,5 +195,6 @@ public class LC_Contest42 {
         }
         return totalSubStrs;
     }
+
 
 }
