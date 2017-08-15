@@ -92,7 +92,9 @@ public class Question {
 		int count=0;
 		if(nums==null)
 			return count;
-		int tempsum=0;
+
+		//Use 2-D array to track all sums.
+		//Can use DP optimization here
 		int sum[][] = new int[nums.length][nums.length];
 		for(int i=0; i<nums.length; i++)
 			for(int j=0; j<nums.length; j++)
@@ -138,6 +140,8 @@ public class Question {
 			count[s1.charAt(i)-'a'] += 1;
 			count[s2.charAt(i)-'a'] -= 1;
 		}
+
+		//Check if first window contains all the chars
 		if(allZero(count)) return true;
 		
 		for(int i=s1.length(); i<s2.length(); i++)
